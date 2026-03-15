@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <title>💪 Kalorienrechner (mit Gewichts-Graph)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-dark text-light">
+  <nav class="navbar navbar-dark bg-dark border-bottom border-secondary">
+    <div class="container">
+      <span class="navbar-brand fw-semibold"><i class="bi bi-activity me-2"></i>Kalorienrechner</span>
+      <span class="text-secondary small">BMR • TDEE • Ziel-Kalorien</span>
+    </div>
+  </nav>
+
+  <header class="py-5 bg-dark">
+    <div class="container">
+      <h1 class="display-5 fw-bold">💪 Kalorienrechner</h1>
+      <p class="lead text-secondary mb-0">Gib deine Daten ein, wähle Aktivitätslevel & Ziel – fertig. Der Einzige Rechner den du brauchst!</p>
+    </div>
+  </header>
+
+  <div class="container mb-4">
+  <div class="accordion" id="accGuide">
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g0">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c0" aria-expanded="false" aria-controls="c0">
+          ℹ️ Leitfaden: Ernährung & Bodybuilding – Überblick
+        </button>
+      </h2>
+      <div id="c0" class="accordion-collapse collapse" aria-labelledby="g0" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <p class="mb-2">Ernährung liefert <strong>a)</strong> Energie fürs Training (Performance) und <strong>b)</strong> Bausteine für Anpassung & Regeneration.</p>
+          <p class="mb-0">Vier zentrale Themen:
+            <strong>Kalorien</strong> (Energie) sowie die drei Makros <strong>Protein</strong>, <strong>Kohlenhydrate</strong>, <strong>Fett</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g1">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c1" aria-expanded="false" aria-controls="c1">
+          ❓ 1) Kalorien – Grundlagen
+        </button>
+      </h2>
+      <div id="c1" class="accordion-collapse collapse" aria-labelledby="g1" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <ul class="mb-2">
+            <li><strong>Kalorie</strong> = Maßeinheit für Energie (kcal).</li>
+            <li><strong>Grundumsatz (BMR):</strong> Energie, die dein Körper in Ruhe braucht.</li>
+            <li><strong>Gesamtumsatz (TDEE):</strong> BMR × Aktivitätslevel (PAL) → dein täglicher Bedarf.</li>
+          </ul>
+          <p class="mb-2"><strong>Kalorienüberschuss:</strong> Zunahme (Fett und – mit Training/Protein – auch Muskel).<br>
+             <strong>Kaloriendefizit:</strong> Abnahme (bei genug Protein bleibt Muskel besser erhalten).</p>
+          <p class="text-secondary small mb-0">Tipp: Fortschritt 2–3 Wochen beobachten und Kalorien feinjustieren.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g2">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c2" aria-expanded="false" aria-controls="c2">
+          🍴 2) Kalorien bestehen aus Makronährstoffen
+        </button>
+      </h2>
+      <div id="c2" class="accordion-collapse collapse" aria-labelledby="g2" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <div class="table-responsive mb-2">
+            <table class="table table-dark table-sm align-middle mb-0">
+              <thead><tr><th>Makronährstoff</th><th>kcal pro Gramm</th></tr></thead>
+              <tbody>
+                <tr><td>Protein</td><td>4 kcal</td></tr>
+                <tr><td>Kohlenhydrate</td><td>4 kcal</td></tr>
+                <tr><td>Fett</td><td>9 kcal</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-secondary small mb-0">Die aufgenommene Kalorienmenge ergibt sich aus der Summe dieser Makros.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g3">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c3" aria-expanded="false" aria-controls="c3">
+          👷🏻‍♂️ 3) Proteine – Baustoff & Muskelschutz
+        </button>
+      </h2>
+      <div id="c3" class="accordion-collapse collapse" aria-labelledby="g3" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <ul class="mb-2">
+            <li>Baustoff für Muskeln, Organe, Haut, Hormone.</li>
+            <li>Wichtig für Muskelaufbau und -erhalt (insb. bei Defizit).</li>
+          </ul>
+          <p class="mb-2"><strong>Empfehlung:</strong> <strong>1,6–2,2&nbsp;g Protein pro kg Körpergewicht/Tag</strong> (hochwertige Quellen kombinieren; bei vegan ggf. bewusst planen).</p>
+          <p class="text-secondary small mb-0">1&nbsp;g Protein = 4&nbsp;kcal.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g4">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c4" aria-expanded="false" aria-controls="c4">
+          💪 4) Kohlenhydrate – Treibstoff fürs Training
+        </button>
+      </h2>
+      <div id="c4" class="accordion-collapse collapse" aria-labelledby="g4" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <p class="mb-2">Liefern schnelle oder langanhaltende Energie (einfache vs. komplexe Carbs).</p>
+          <ul class="mb-2">
+            <li><strong>Pre-Workout:</strong> leicht verdauliche Carbs ~1–2&nbsp;h vorher.</li>
+            <li><strong>Post-Workout:</strong> Carbs + Protein → Glykogenspeicher & Regeneration.</li>
+          </ul>
+          <p class="text-secondary small mb-0">1&nbsp;g Kohlenhydrate = 4&nbsp;kcal.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g5">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c5" aria-expanded="false" aria-controls="c5">
+          🧈 5) Fette – Hormone, Energie, Sättigung
+        </button>
+      </h2>
+      <div id="c5" class="accordion-collapse collapse" aria-labelledby="g5" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <ul class="mb-2">
+            <li>Wichtig für Hormonhaushalt, Energieversorgung & Sättigung.</li>
+            <li>Quellen: ungesättigte (Nüsse, Avocado, Fisch, Olivenöl); gesättigte (Fleisch, Käse, Butter); <em>Transfette vermeiden</em>.</li>
+          </ul>
+          <p class="mb-2"><strong>Empfehlung:</strong> <strong>0,5–1,0&nbsp;g Fett pro kg Körpergewicht/Tag</strong>. Zu wenig Fett → Risiko für Heißhunger/Hormonprobleme.</p>
+          <p class="text-secondary small mb-0">1&nbsp;g Fett = 9&nbsp;kcal.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="accordion-item bg-dark text-light border-secondary">
+      <h2 class="accordion-header" id="g6">
+        <button class="accordion-button collapsed bg-dark text-light" type="button"
+                data-bs-toggle="collapse" data-bs-target="#c6" aria-expanded="false" aria-controls="c6">
+          📐 6) Deinen Bedarf ermitteln & anwenden
+        </button>
+      </h2>
+      <div id="c6" class="accordion-collapse collapse" aria-labelledby="g6" data-bs-parent="#accGuide">
+        <div class="accordion-body">
+          <ol class="mb-2">
+            <li><strong>BMR</strong> per Mifflin-St-Jeor berechnen.</li>
+            <li><strong>TDEE</strong> = BMR × <strong>PAL</strong> (dein Aktivitätslevel).</li>
+            <li><strong>Ziel wählen</strong>: Zunehmen (Überschuss), Abnehmen (Defizit), Halten (≈TDEE).</li>
+            <li><strong>Makros setzen</strong>:
+              Protein 1,6–2,2&nbsp;g/kg · Fett 0,5–1,0&nbsp;g/kg · Rest Carbs.
+            </li>
+            <li><strong>Iterieren</strong>: Fortschritt 2–3 Wochen prüfen, Kalorien/Makros anpassen.</li>
+          </ol>
+          <p class="small text-secondary mb-0">Nutze unten den Rechner & die Makro-Box – alles passt sich deinen Eingaben an.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <main class="container my-4">
+    
+    <ul class="nav nav-pills mb-4 bg-dark border border-secondary rounded p-1" id="calcTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active text-light" id="theory-tab" data-bs-toggle="tab" data-bs-target="#theory-pane" type="button" role="tab" aria-controls="theory-pane" aria-selected="true">
+          <i class="bi bi-calculator me-1"></i> Theoretischer Rechner
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link text-light" id="real-tab" data-bs-toggle="tab" data-bs-target="#real-pane" type="button" role="tab" aria-controls="real-pane" aria-selected="false">
+          <i class="bi bi-clipboard-data me-1"></i> Realer Verbrauch (2-Wochen-Test)
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="calcTabsContent">
+      
+      <div class="tab-pane fade show active" id="theory-pane" role="tabpanel" aria-labelledby="theory-tab" tabindex="0">
+        
+        <div class="row g-4">
+          <div class="col-12 col-lg-6">
+            <div class="card bg-body-tertiary text-light border-0">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h4 mb-3">Deine Eingaben</h2>
+                <form id="calcForm" class="needs-validation" novalidate>
+                  <div class="row g-3">
+                    <div class="col-md-4">
+                      <label for="age" class="form-label">Alter (Jahre)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="age" min="14" max="100" step="1" value="24" required>
+                      <div class="invalid-feedback">Bitte Alter eingeben.</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="height" class="form-label">Größe (cm)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="height" min="120" max="230" step="1" value="163" required>
+                      <div class="invalid-feedback">Bitte Größe eingeben.</div>
+                    </div>
+                    <div class="col-md-4">
+                      <label for="weight" class="form-label">Gewicht (kg)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="weight" min="35" max="250" step="0.1" value="59" required>
+                      <div class="invalid-feedback">Bitte Gewicht eingeben.</div>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                      <label for="sex" class="form-label">Geschlecht</label>
+                      <select id="sex" class="form-select bg-dark text-light">
+                        <option value="male" selected>Mann</option>
+                        <option value="female">Frau</option>
+                      </select>
+                      <div class="form-text text-secondary">Wirkt sich nur auf die BMR-Konstante aus (+5 vs. −161).</div>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="pal" class="form-label">Aktivitätslevel (PAL)</label>
+                      <select id="pal" class="form-select bg-dark text-light">
+                        <option value="1.45">Sitzend/Büro (PAL≈1.45) – wenig NEAT, 0–2 lockere Workouts/Woche</option>
+                        <option value="1.60" selected>Leicht aktiv (PAL≈1.60) – Büro + 3–4 Workouts/Woche</option>
+                        <option value="1.75">Moderat aktiv (PAL≈1.75) – stehender Job/hoher NEAT oder 4–6 intensive Einheiten</option>
+                        <option value="1.90">Sehr aktiv (PAL≈1.90) – körperliche Arbeit/hohe Trainingsumfänge</option>
+                        <option value="2.20">Extrem aktiv (PAL≈2.20) – Leistungssport/harte körperliche Arbeit</option>
+                      </select>
+                      <div class="form-text text-secondary">
+                        PAL = Gesamtenergie / Grundumsatz. Beispiele aus dem Compendium (METs) in der Hilfe unten.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                      <label for="goalWeight" class="form-label">Zielgewicht (kg)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="goalWeight" min="35" max="250" step="0.1" value="65">
+                      <div class="form-text text-secondary">Der Graph schätzt die Dauer bis zu diesem Ziel.</div>
+                    </div>
+                  </div>
+
+                  <hr class="border-secondary my-4">
+
+                  <h3 class="h5 mb-2">Dein Ziel</h3>
+                  <div class="btn-group w-100 mb-2" role="group" aria-label="Zielwahl">
+                    <input type="radio" class="btn-check" name="goal" id="goalMaintain" value="maintain" checked>
+                    <label class="btn btn-outline-light" for="goalMaintain"><i class="bi bi-slash-circle me-1"></i>Gewicht halten</label>
+
+                    <input type="radio" class="btn-check" name="goal" id="goalGain" value="gain">
+                    <label class="btn btn-outline-success" for="goalGain"><i class="bi bi-arrow-up-circle me-1"></i>Zunehmen</label>
+
+                    <input type="radio" class="btn-check" name="goal" id="goalLose" value="lose">
+                    <label class="btn btn-outline-danger" for="goalLose"><i class="bi bi-arrow-down-circle me-1"></i>Abnehmen</label>
+                  </div>
+
+                  <div id="surplusWrap" class="mb-2" style="display:none;">
+                    <label for="surplus" class="form-label">Kalorien-Überschuss (+50 bis +500 kcal)</label>
+                    <input type="range" class="form-range" min="50" max="500" step="10" id="surplus" value="200">
+                    <div class="d-flex justify-content-between text-secondary small">
+                      <span>+50</span><span id="surplusVal">+200</span><span>+500</span>
+                    </div>
+                  </div>
+
+                  <div id="deficitWrap" class="mb-2" style="display:none;">
+                    <label for="deficit" class="form-label">Kalorien-Defizit (−100 bis −800 kcal)</label>
+                    <input type="range" class="form-range" min="100" max="800" step="10" id="deficit" value="500">
+                    <div class="d-flex justify-content-between text-secondary small">
+                      <span>−100</span><span id="deficitVal">−500</span><span>−800</span>
+                    </div>
+                  </div>
+
+                  <div class="d-grid d-md-flex gap-2 mt-3">
+                    <button type="submit" class="btn btn-primary"><i class="bi bi-calculator me-2"></i>Berechnen</button>
+                    <button type="button" id="resetBtn" class="btn btn-outline-secondary">Zurücksetzen</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card bg-body-tertiary text-light border-0">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h4 mb-3">Ergebnisse</h2>
+
+                <div class="row g-3">
+                  <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="text-secondary small">Grundumsatz (BMR)</div>
+                      <div class="display-6 fw-bold" id="bmrOut">–</div>
+                      <div class="small text-secondary">Mifflin-St-Jeor</div>
+                    </div>
+                  </div>
+                  <div class="col-12 col-md-6">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="text-secondary small">Gesamtumsatz (TDEE)</div>
+                      <div class="display-6 fw-bold" id="tdeeOut">–</div>
+                      <div class="small text-secondary">BMR × PAL</div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <div class="text-secondary small">Ziel-Kalorien</div>
+                          <div class="h2 fw-bold mb-0" id="targetOut">–</div>
+                        </div>
+                        <span class="badge text-bg-primary" id="goalBadge">—</span>
+                      </div>
+                      <div class="small text-secondary mt-2" id="macroHint">Hinweis: Protein 1.6–2.2 g/kg, Fett ≥0.6–0.8 g/kg, Rest Kohlenhydrate.</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="alert alert-secondary mt-3 mb-0">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Diese Werte sind Schätzungen. Prüfe Fortschritt 2–3 Wochen und passe bei Bedarf an.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card bg-body-tertiary text-light border-0">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h5 mb-3"><i class="bi bi-graph-up-arrow me-2"></i>Gewichtsprojektion</h2>
+                <canvas id="weightChart" height="140"></canvas>
+                <div class="small text-secondary mt-2" id="chartNote">
+                  Der Graph zeigt die geschätzte Gewichtsentwicklung (x: Wochen, y: kg) basierend auf deinem aktuellen Tagesüberschuss/-defizit.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="card bg-body-tertiary text-light border-0">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h5 mb-2"><i class="bi bi-nutrition me-2"></i>Makronährstoff-Verteilung</h2>
+                <p class="text-secondary small mb-3">
+                  Vorschlag: <strong>2.0 g/kg</strong> Protein & <strong>0.8 g/kg</strong> Fett; Rest als Kohlenhydrate.
+                  <br>Bereiche: Protein <strong>1.6–2.2 g/kg</strong>, Fett <strong>0.5–1.0 g/kg</strong>.
+                </p>
+
+                <div class="row g-3 mb-2">
+                  <div class="col-12 col-md-4">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="text-secondary small">Protein</div>
+                      <div class="h4 mb-0"><span id="protG">–</span> g</div>
+                      <div class="small text-secondary"><span id="protKcal">–</span> kcal · <span id="protPct">–</span>%</div>
+                      <div class="progress mt-2" role="progressbar" aria-label="Protein">
+                        <div id="protBar" class="progress-bar bg-info" style="width:0%"></div>
+                      </div>
+                      <div class="small text-secondary mt-2">Empfohlen: <span id="protRange">–</span> g/Tag</div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="text-secondary small">Fett</div>
+                      <div class="h4 mb-0"><span id="fatG">–</span> g</div>
+                      <div class="small text-secondary"><span id="fatKcal">–</span> kcal · <span id="fatPct">–</span>%</div>
+                      <div class="progress mt-2" role="progressbar" aria-label="Fett">
+                        <div id="fatBar" class="progress-bar bg-warning" style="width:0%"></div>
+                      </div>
+                      <div class="small text-secondary mt-2">Empfohlen: <span id="fatRange">–</span> g/Tag</div>
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-4">
+                    <div class="p-3 border rounded-3 border-secondary">
+                      <div class="text-secondary small">Kohlenhydrate</div>
+                      <div class="h4 mb-0"><span id="carbG">–</span> g</div>
+                      <div class="small text-secondary"><span id="carbKcal">–</span> kcal · <span id="carbPct">–</span>%</div>
+                      <div class="progress mt-2" role="progressbar" aria-label="Kohlenhydrate">
+                        <div id="carbBar" class="progress-bar" style="width:0%"></div>
+                      </div>
+                      <div class="small text-secondary mt-2">Rest aus Kalorienziel</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="alert alert-secondary mb-0 small">
+                  <i class="bi bi-info-circle me-2"></i>
+                  Passe bei Bedarf die Gramm-pro-kg-Werte an (z.&nbsp;B. Protein 1.8 statt 2.0 g/kg, Fett 0.7 statt 0.8 g/kg).
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card bg-body-tertiary text-light border-0 mt-4">
+          <div class="card-body bg-dark text-light">
+            <h2 class="h5">Wie wird gerechnet?</h2>
+            <ol class="mb-3">
+              <li><strong>BMR (Grundumsatz)</strong> nach Mifflin-St-Jeor:<br>
+                <code>Männer: 10×kg + 6.25×cm − 5×Alter + 5</code>,
+                <code>Frauen: 10×kg + 6.25×cm − 5×Alter − 161</code>.<br>
+                <span class="text-secondary small">
+                  Quelle: Mifflin MD, St Jeor ST (1990). AJCN.
+                  <a class="link-light" href="https://pubmed.ncbi.nlm.nih.gov/2305711/" target="_blank" rel="noopener">PubMed</a>
+                </span>
+              </li>
+              <li class="mt-2"><strong>TDEE (Gesamtumsatz)</strong> = <em>BMR × PAL</em> (Physical Activity Level). Richtwerte aus FAO/WHO/UNU:
+                sedentär ~1.4–1.69, moderat ~1.7–1.99, hoch ~2.0–2.4.
+                <br><span class="text-secondary small">
+                  Quelle: FAO/WHO/UNU Human Energy Requirements (2004).
+                  <a class="link-light" href="https://www.fao.org/4/y5686e/y5686e00.htm" target="_blank" rel="noopener">Bericht</a>
+                </span>
+              </li>
+              <li class="mt-2"><strong>Aktivitätsbeispiele</strong> zur Einordnung der PAL-Stufen basieren auf MET-Werten
+                aus dem Compendium of Physical Activities (Ainsworth et&nbsp;al., 2011).
+                <br><span class="text-secondary small">
+                  <a class="link-light" href="https://pubmed.ncbi.nlm.nih.gov/21681120/" target="_blank" rel="noopener">PubMed</a> ·
+                  <a class="link-light" href="https://cdn-links.lww.com/permalink/mss/a/mss_43_8_2011_06_13_ainsworth_202093_sdc1.pdf" target="_blank" rel="noopener">PDF</a>
+                </span>
+              </li>
+              <li class="mt-2"><strong>Makro-Hinweis</strong> (optional): Protein ~1.6–2.2&nbsp;g/kg/Tag (Plateau ≈1.6 g/kg),
+                gemäß Meta-Analysen.
+                <br><span class="text-secondary small">
+                  Morton et&nbsp;al., 2018, <a class="link-light" href="https://bjsm.bmj.com/content/bjsports/52/6/376.full.pdf" target="_blank" rel="noopener">BJSM (PDF)</a>;
+                  Stokes et&nbsp;al., 2018, <a class="link-light" href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5852756/" target="_blank" rel="noopener">Nutrients (PMC)</a>
+                </span>
+              </li>
+            </ol>
+
+            <div class="accordion" id="acc">
+              <div class="accordion-item bg-dark text-light">
+                <h2 class="accordion-header">
+                  <button class="accordion-button bg-dark text-light collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#acc1">
+                    Beispiele für Aktivitätslevel (aus METs abgeleitet)
+                  </button>
+                </h2>
+                <div id="acc1" class="accordion-collapse collapse" data-bs-parent="#acc">
+                  <div class="accordion-body">
+                    <ul class="mb-0">
+                      <li><strong>Sitzend (PAL≈1.45):</strong> Bürojob, <em>LISS</em> 1–2×/Woche, wenig Wege.</li>
+                      <li><strong>Leicht aktiv (PAL≈1.60):</strong> 3–4 Workouts/Woche (z. B. Kraft + 30–45 min LISS).</li>
+                      <li><strong>Moderat (PAL≈1.75):</strong> stehender Beruf/hoher NEAT oder 4–6 intensive Einheiten.</li>
+                      <li><strong>Sehr aktiv (PAL≈1.90):</strong> körperliche Arbeit + regelmäßiges Training.</li>
+                      <li><strong>Extrem (PAL≈2.20):</strong> Leistungssport/harte körperliche Arbeit.</li>
+                    </ul>
+                    <p class="text-secondary small mb-0">Hinweis: Dies sind praktikable Richtwerte; reale TEE variiert individuell.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="real-pane" role="tabpanel" aria-labelledby="real-tab" tabindex="0">
+        <div class="row g-4">
+          
+          <div class="col-12 col-lg-6">
+            <div class="card bg-body-tertiary text-light border-0">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h4 mb-3">Deine Praxis-Daten</h2>
+                <p class="text-secondary small">Wiege dich täglich, bilde den Wochenschnitt und trage hier die Durchschnitte der letzten zwei Wochen ein. Voraussetzung: Deine Kalorienzufuhr und dein Training waren konstant.</p>
+                
+                <form id="realForm">
+                  <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                      <label for="realWeightW1" class="form-label">Ø Gewicht Woche 1 (kg)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="realWeightW1" step="0.1" placeholder="z.B. 60.0" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="realWeightW2" class="form-label">Ø Gewicht Woche 2 (kg)</label>
+                      <input type="number" class="form-control bg-dark text-light" id="realWeightW2" step="0.1" placeholder="z.B. 59.5" required>
+                    </div>
+                  </div>
+                  <div class="mb-4">
+                    <label for="realKcal" class="form-label">Ø Täglich gegessene Kalorien</label>
+                    <input type="number" class="form-control bg-dark text-light" id="realKcal" step="1" placeholder="z.B. 2500" required>
+                  </div>
+                  
+                  <div class="d-grid">
+                    <button type="button" id="btnCalcReal" class="btn btn-primary"><i class="bi bi-magic me-2"></i>Echten Bedarf berechnen</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="card bg-body-tertiary text-light border-0 mt-4">
+          <div class="card-body bg-dark text-light">
+            <h2 class="h5">Wie wird gerechnet?</h2>
+            <p class="mb-2 small">Die Berechnung basiert auf der etablierten <strong>Wishnofsky-Regel</strong> (1958). Sie besagt, dass der physiologische Brennwert von einem Kilogramm menschlichem Gewebe (hauptsächlich Fett, aber auch fettfreie Masse) bei Gewichtsverlust oder -zunahme in der Praxis rund <strong>7.000 kcal</strong> entspricht.</p>
+            <ol class="mb-3 small">
+              <li><strong>Tägliche Kaloriendifferenz:</strong> Die Gewichtsdifferenz zwischen Woche 1 und Woche 2 (über 7 Tage) wird mit 7.000 multipliziert und dann durch 7 Tage geteilt. Mathematisch kürzt sich das exakt auf einen Faktor von 1.000 herunter.<br>
+                <code class="text-light bg-secondary px-1 rounded">Gewichtsdifferenz (kg) × 1000 = Tägliche kcal-Abweichung</code>
+              </li>
+              <li class="mt-2"><strong>Realer Gesamtumsatz (TDEE):</strong> Wenn du z. B. 0,5 kg abnimmst, warst du täglich 500 kcal im Defizit. Addiert man dieses Defizit zu den gegessenen Kalorien, erhält man den echten Erhaltungsumsatz.<br>
+                <code class="text-light bg-secondary px-1 rounded">Gegessene kcal + (Gewichtsverlust in kg × 1000) = Realer TDEE</code>
+              </li>
+            </ol>
+            <div class="text-secondary small">
+              Quelle: Wishnofsky M. (1958). Caloric Equivalents of Gained or Lost Weight. <em>The American Journal of Clinical Nutrition</em>.
+              <a class="link-light" href="https://academic.oup.com/ajcn/article-abstract/6/5/542/4730006" target="_blank" rel="noopener">OUP/AJCN</a>
+            </div>
+          </div>
+        </div>
+          </div>
+
+          <div class="col-12 col-lg-6">
+            <div class="card bg-body-tertiary text-light border-0 h-100">
+              <div class="card-body bg-dark text-light">
+                <h2 class="h4 mb-3">Dein realer Stoffwechsel</h2>
+                
+                <div class="p-3 border rounded-3 border-secondary mb-3">
+                  <div class="text-secondary small">Realer Erhaltungskaloriensatz (TDEE)</div>
+                  <div class="display-5 fw-bold text-primary" id="realTdeeOut">–</div>
+                  <div class="small text-secondary mt-1" id="realDiffText">Warte auf Eingabe...</div>
+                </div>
+
+                <div class="row g-2">
+                  <div class="col-6">
+                    <div class="p-2 border rounded-3 border-secondary bg-body-tertiary text-center">
+                      <div class="text-secondary small mb-1">Empfehlung Abnehmen</div>
+                      <div class="h5 mb-0 text-danger" id="realCutOut">–</div>
+                      <div class="small text-secondary">(-500 kcal)</div>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-2 border rounded-3 border-secondary bg-body-tertiary text-center">
+                      <div class="text-secondary small mb-1">Empfehlung Zunehmen</div>
+                      <div class="h5 mb-0 text-success" id="realBulkOut">–</div>
+                      <div class="small text-secondary">(+300 kcal)</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div> 
+    <p class="text-secondary small mt-3">Haftungsausschluss: Diese Seite ersetzt keine medizinische Beratung.</p>
+  </main>
+
+  <footer class="py-4 border-top border-secondary">
+    <div class="container d-flex justify-content-between">
+      <span class="text-secondary small">© 2025 Daniel Lambrecht · <span class="text-light"></span></span>
+      <a class="small link-light" href="#" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="bi bi-arrow-up-circle me-1"></i>nach oben</a>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    const form = document.getElementById('calcForm');
+    const sexEl = document.getElementById('sex');
+    const ageEl = document.getElementById('age');
+    const heightEl = document.getElementById('height');
+    const weightEl = document.getElementById('weight');
+    const goalWeightEl = document.getElementById('goalWeight');
+    const palEl = document.getElementById('pal');
+
+    const bmrOut = document.getElementById('bmrOut');
+    const tdeeOut = document.getElementById('tdeeOut');
+    const targetOut = document.getElementById('targetOut');
+    const goalBadge = document.getElementById('goalBadge');
+
+    const goalMaintain = document.getElementById('goalMaintain');
+    const goalGain = document.getElementById('goalGain');
+    const goalLose = document.getElementById('goalLose');
+
+    const surplusWrap = document.getElementById('surplusWrap');
+    const deficitWrap = document.getElementById('deficitWrap');
+    const surplus = document.getElementById('surplus');
+    const deficit = document.getElementById('deficit');
+    const surplusVal = document.getElementById('surplusVal');
+    const deficitVal = document.getElementById('deficitVal');
+
+    const chartNote = document.getElementById('chartNote');
+    const chartCtx = document.getElementById('weightChart').getContext('2d');
+    let weightChart;
+
+    function fmt(n){ return Number(n).toLocaleString('de-DE', {maximumFractionDigits:0}); }
+    function fmt1(n){ return Number(n).toLocaleString('de-DE', {maximumFractionDigits:1}); }
+
+    // --- URL Query Params (Deep Link / Shareable Link) ---
+    function numFromParam(v){
+      if(v === null || v === undefined) return null;
+      const s = String(v).trim().replace(',', '.');
+      const n = Number(s);
+      return Number.isFinite(n) ? n : null;
+    }
+    function clamp(n, min, max){ return Math.min(Math.max(n, min), max); }
+    function nearestOptionValue(selectEl, target){
+      const opts = Array.from(selectEl.options).map(o => Number(o.value)).filter(Number.isFinite);
+      if(!opts.length || !Number.isFinite(target)) return null;
+      return opts.reduce((best, v) => Math.abs(v - target) < Math.abs(best - target) ? v : best, opts[0]);
+    }
+
+    // Liest Werte aus der URL und füllt das Formular (Return: true, wenn goalWeight per URL gesetzt wurde)
+    function applyParamsFromUrl(){
+      const params = new URLSearchParams(window.location.search);
+      let hadGoalWeight = false;
+
+      // sex
+      const sex = params.get('sex');
+      if(sex === 'male' || sex === 'female') sexEl.value = sex;
+
+      // age, height, weight
+      const ageP = numFromParam(params.get('age'));
+      if(ageP !== null) ageEl.value = String(clamp(Math.round(ageP), Number(ageEl.min)||0, Number(ageEl.max)||999));
+
+      const hP = numFromParam(params.get('height'));
+      if(hP !== null) heightEl.value = String(clamp(Math.round(hP), Number(heightEl.min)||0, Number(heightEl.max)||999));
+
+      const wP = numFromParam(params.get('weight'));
+      if(wP !== null) weightEl.value = String(clamp(wP, Number(weightEl.min)||0, Number(weightEl.max)||999));
+
+      // pal
+      const palP = numFromParam(params.get('pal'));
+      if(palP !== null){
+        const exact = Array.from(palEl.options).some(o => Number(o.value) === palP);
+        palEl.value = exact ? String(palP) : String(nearestOptionValue(palEl, palP) ?? palEl.value);
+      }
+
+      // goal + delta
+      const goal = params.get('goal');
+      if(goal === 'gain'){
+        goalGain.checked = true;
+      } else if(goal === 'lose'){
+        goalLose.checked = true;
+      } else if(goal === 'maintain'){
+        goalMaintain.checked = true;
+      }
+
+      const surP = numFromParam(params.get('surplus'));
+      if(surP !== null){
+        const s = clamp(Math.round(surP/10)*10, Number(surplus.min), Number(surplus.max));
+        surplus.value = String(s);
+        surplusVal.textContent = `+${s}`;
+      }
+
+      const defP = numFromParam(params.get('deficit'));
+      if(defP !== null){
+        const d = clamp(Math.round(defP/10)*10, Number(deficit.min), Number(deficit.max));
+        deficit.value = String(d);
+        deficitVal.textContent = `−${d}`;
+      }
+
+      // goalWeight
+      if(params.has('goalWeight')){
+        const gwP = numFromParam(params.get('goalWeight'));
+        if(gwP !== null){
+          goalWeightEl.value = String(clamp(gwP, Number(goalWeightEl.min)||0, Number(goalWeightEl.max)||999));
+          hadGoalWeight = true;
+        }
+      }
+
+      return hadGoalWeight;
+    }
+
+    // Schreibt aktuelle Werte in die URL (ohne Reload)
+    function syncUrlToState(){
+      try{
+        const url = new URL(window.location.href);
+        const p = url.searchParams;
+
+        const setIfOk = (key, el, isNumber=false) => {
+          const v = el.value;
+          if(v === '' || v === null || v === undefined){ p.delete(key); return; }
+          if(isNumber){
+            const n = numFromParam(v);
+            if(n === null){ p.delete(key); return; }
+            p.set(key, String(v));
+          } else {
+            p.set(key, String(v));
+          }
+        };
+
+        setIfOk('sex', sexEl);
+        setIfOk('age', ageEl, true);
+        setIfOk('height', heightEl, true);
+        setIfOk('weight', weightEl, true);
+        setIfOk('pal', palEl, true);
+        setIfOk('goalWeight', goalWeightEl, true);
+
+        const goal = goalMaintain.checked ? 'maintain' : (goalGain.checked ? 'gain' : 'lose');
+        p.set('goal', goal);
+
+        if(goal === 'gain'){
+          p.set('surplus', String(surplus.value));
+          p.delete('deficit');
+        } else if(goal === 'lose'){
+          p.set('deficit', String(deficit.value));
+          p.delete('surplus');
+        } else {
+          p.delete('surplus');
+          p.delete('deficit');
+        }
+
+        history.replaceState(null, '', url.toString());
+      } catch(e){
+        // file:// oder restriktive Browser-Einstellungen: ignorieren
+      }
+    }
+
+    function getBMR(sex, age, cm, kg){
+      if(sex === 'male'){
+        return 10*kg + 6.25*cm - 5*age + 5;
+      } else {
+        return 10*kg + 6.25*cm - 5*age - 161;
+      }
+    }
+
+    function updateMacros(){
+      const { target } = computeCore();
+      const kg = Number(weightEl.value);
+
+      const PROT_PER_KG = 2.0;
+      const FAT_PER_KG  = 0.8;
+
+      const PROT_MIN = 1.6, PROT_MAX = 2.2;
+      const FAT_MIN  = 0.5, FAT_MAX  = 1.0;
+
+      const protG  = kg * PROT_PER_KG;
+      const fatG   = kg * FAT_PER_KG;
+      const protK  = protG * 4;
+      const fatK   = fatG  * 9;
+      const restK  = Math.max(0, target - (protK + fatK));
+      const carbG  = restK / 4;
+
+      const protPct = target > 0 ? (protK / target * 100) : 0;
+      const fatPct  = target > 0 ? (fatK  / target * 100) : 0;
+      const carbPct = target > 0 ? (restK / target * 100) : 0;
+
+      const f0 = n => Number(n).toLocaleString('de-DE', {maximumFractionDigits:0});
+
+      document.getElementById('protG').textContent   = f0(protG);
+      document.getElementById('fatG').textContent    = f0(fatG);
+      document.getElementById('carbG').textContent   = f0(carbG);
+
+      document.getElementById('protKcal').textContent = f0(protK);
+      document.getElementById('fatKcal').textContent  = f0(fatK);
+      document.getElementById('carbKcal').textContent = f0(restK);
+
+      document.getElementById('protPct').textContent  = f0(protPct);
+      document.getElementById('fatPct').textContent   = f0(fatPct);
+      document.getElementById('carbPct').textContent  = f0(carbPct);
+
+      document.getElementById('protBar').style.width = protPct + '%';
+      document.getElementById('fatBar').style.width  = fatPct  + '%';
+      document.getElementById('carbBar').style.width = carbPct + '%';
+
+      document.getElementById('protRange').textContent = `${f0(kg*PROT_MIN)}–${f0(kg*PROT_MAX)}`;
+      document.getElementById('fatRange').textContent  = `${f0(kg*FAT_MIN)}–${f0(kg*FAT_MAX)}`;
+    }
+
+    function computeCore(){
+      const sex = sexEl.value;
+      const age = Number(ageEl.value);
+      const cm  = Number(heightEl.value);
+      const kg  = Number(weightEl.value);
+      const pal = Number(palEl.value);
+
+      const bmr = getBMR(sex, age, cm, kg);
+      const tdee = bmr * pal;
+
+      let target = tdee;
+      let badge = 'Erhalten';
+      let dailyDelta = 0;
+      if(goalGain.checked){
+        dailyDelta = Number(surplus.value);
+        target = tdee + dailyDelta;
+        badge = `Zunehmen (+${dailyDelta} kcal)`;
+      } else if(goalLose.checked){
+        dailyDelta = -Number(deficit.value);
+        target = tdee + dailyDelta;
+        badge = `Abnehmen (${dailyDelta} kcal)`;
+      }
+
+      return {bmr, tdee, target, badge, dailyDelta};
+    }
+
+    function compute(){
+      const {bmr, tdee, target, badge} = computeCore();
+      bmrOut.textContent = fmt(bmr) + ' kcal';
+      tdeeOut.textContent = fmt(tdee) + ' kcal';
+      targetOut.textContent = fmt(target) + ' kcal/Tag';
+      goalBadge.textContent = badge;
+      updateProjection();
+      updateMacros();
+      syncUrlToState();
+    }
+
+    function updateGoalUI(){
+      if(goalGain.checked){
+        surplusWrap.style.display = '';
+        deficitWrap.style.display = 'none';
+      } else if(goalLose.checked){
+        surplusWrap.style.display = 'none';
+        deficitWrap.style.display = '';
+      } else {
+        surplusWrap.style.display = 'none';
+        deficitWrap.style.display = 'none';
+      }
+      compute();
+    }
+
+    function buildProjection(){
+      const {dailyDelta} = computeCore();
+      const startKg = Number(weightEl.value);
+      const goalKg = Number(goalWeightEl.value) || startKg;
+
+      const weeklyKgDelta = (dailyDelta * 7) / 7700;
+
+      let labels = [];
+      let data = [];
+
+      const maxWeeks = 24; 
+      const minWeeks = 12;
+
+      function sign(x){ return x < 0 ? -1 : x > 0 ? 1 : 0; }
+
+      let weeksNeeded;
+      if (weeklyKgDelta === 0){
+        weeksNeeded = minWeeks;
+      } else {
+        weeksNeeded = Math.ceil(Math.abs((goalKg - startKg) / weeklyKgDelta));
+      }
+      const totalWeeks = Math.max(minWeeks, Math.min(maxWeeks, weeksNeeded || minWeeks));
+
+      let current = startKg;
+      for(let w=0; w<= totalWeeks; w++){
+        labels.push('W' + w);
+        data.push(Number(current.toFixed(2)));
+        if(weeklyKgDelta !== 0){
+          const next = current + weeklyKgDelta;
+          if ((sign(weeklyKgDelta) > 0 && current >= goalKg) ||
+              (sign(weeklyKgDelta) < 0 && current <= goalKg)){
+            for(let j=w+1;j<=totalWeeks;j++){
+              labels.push('W' + j);
+              data.push(Number(current.toFixed(2)));
+            }
+            break;
+          }
+          current = next;
+        }
+      }
+
+      let note = '';
+      if(weeklyKgDelta === 0){
+        note = 'Aktuell kein Überschuss/Defizit – Gewicht bleibt voraussichtlich stabil.';
+      } else {
+        const estWeeks = Math.ceil(Math.abs((goalKg - startKg) / weeklyKgDelta));
+        if (!isFinite(estWeeks) || estWeeks < 0){
+          note = 'Mit den gewählten Einstellungen ist das Zielgewicht derzeit nicht erreichbar.';
+        } else {
+          note = `Geschätzte Veränderung: ${fmt1(weeklyKgDelta)} kg/Woche · Zielgewicht in ca. ${estWeeks} Woche(n).`;
+        }
+      }
+      return {labels, data, note};
+    }
+
+    function updateProjection(){
+      const proj = buildProjection();
+      chartNote.textContent = proj.note;
+
+      const zielLine = proj.labels.map(()=> Number(goalWeightEl.value));
+
+      if(weightChart){
+        weightChart.data.labels = proj.labels;
+        weightChart.data.datasets[0].data = proj.data;
+        weightChart.data.datasets[1].data = zielLine;
+        weightChart.update();
+      } else {
+        weightChart = new Chart(chartCtx, {
+          type: 'line',
+          data: {
+            labels: proj.labels,
+            datasets: [{
+              label: 'Gewicht (kg)',
+              data: proj.data,
+              borderWidth: 2,
+              borderColor: 'rgba(54, 162, 235, 1)',
+              tension: 0.25,
+              pointRadius: 2
+            }, {
+              label: 'Zielgewicht',
+              data: zielLine,
+              borderColor: 'rgba(255, 99, 132, 0.8)',
+              borderDash: [6,4],
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: false
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: {
+                title: { display: true, text: 'Wochen' },
+                grid: { color: 'rgba(200,200,200,0.2)' }
+              },
+              y: {
+                title: { display: true, text: 'Gewicht (kg)' },
+                grid: { color: 'rgba(200,200,200,0.2)' }
+              }
+            },
+            plugins: {
+              legend: { display: true },
+              tooltip: { mode: 'index', intersect: false }
+            }
+          }
+        });
+      }
+    }
+
+    // Events Theory Tab
+    [goalMaintain, goalGain, goalLose].forEach(el => el.addEventListener('change', updateGoalUI));
+    [sexEl, ageEl, heightEl, weightEl, goalWeightEl, palEl].forEach(el => el.addEventListener('input', compute));
+    surplus.addEventListener('input', () => { surplusVal.textContent = `+${surplus.value}`; compute(); });
+    deficit.addEventListener('input', () => { deficitVal.textContent = `−${deficit.value}`; compute(); });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if(!form.checkValidity()){
+        e.stopPropagation();
+      }
+      form.classList.add('was-validated');
+      compute();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      form.reset();
+      sexEl.value = 'male';
+      ageEl.value = 23; heightEl.value = 163; weightEl.value = 57; palEl.value = '1.45';
+      goalMaintain.checked = true;
+      goalWeightEl.value = weightEl.value;
+      updateGoalUI();
+      compute();
+      try{
+        const url = new URL(window.location.href);
+        url.search = '';
+        history.replaceState(null, '', url.toString());
+      } catch(e){}
+    });
+
+    // --- REALER VERBRAUCH LOGIK ---
+    const realWeightW1 = document.getElementById('realWeightW1');
+    const realWeightW2 = document.getElementById('realWeightW2');
+    const realKcal = document.getElementById('realKcal');
+    const btnCalcReal = document.getElementById('btnCalcReal');
+    
+    const realTdeeOut = document.getElementById('realTdeeOut');
+    const realDiffText = document.getElementById('realDiffText');
+    const realCutOut = document.getElementById('realCutOut');
+    const realBulkOut = document.getElementById('realBulkOut');
+
+    btnCalcReal.addEventListener('click', () => {
+      const w1 = parseFloat(realWeightW1.value);
+      const w2 = parseFloat(realWeightW2.value);
+      const kcal = parseFloat(realKcal.value);
+
+      if(isNaN(w1) || isNaN(w2) || isNaN(kcal)) {
+        alert("Bitte fülle alle drei Felder mit gültigen Zahlen aus.");
+        return;
+      }
+
+      // Berechnung: W1 - W2
+      // Positiv = Abnahme (TDEE ist höher als kcal)
+      // Negativ = Zunahme (TDEE ist niedriger als kcal)
+      const diff = w1 - w2;
+      const tdee = kcal + (diff * 1000);
+
+      realTdeeOut.textContent = Math.round(tdee) + ' kcal';
+      
+      let trend = "Gewicht gehalten";
+      if(diff > 0) trend = `Abnahme von ${diff.toFixed(2)} kg erkannt.`;
+      if(diff < 0) trend = `Zunahme von ${Math.abs(diff).toFixed(2)} kg erkannt.`;
+      
+      realDiffText.textContent = `${trend} Dein Körper verbrennt also täglich ca. ${Math.abs(Math.round(diff * 1000))} kcal ${diff > 0 ? 'mehr' : 'weniger'} als du gegessen hast.`;
+
+      realCutOut.textContent = Math.round(tdee - 500) + ' kcal';
+      realBulkOut.textContent = Math.round(tdee + 300) + ' kcal';
+    });
+
+    // Initial state (URL -> Form -> UI)
+    const hadGoalWeight = applyParamsFromUrl();
+    if(!hadGoalWeight){
+      goalWeightEl.value = weightEl.value;
+    }
+    updateGoalUI(); 
+
+  </script>
+</body>
+</html>
